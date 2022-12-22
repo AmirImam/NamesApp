@@ -1,0 +1,57 @@
+﻿@page "/"
+@using NamesApp.Models;
+@inject HttpClient Http;
+
+<PageTitle>Index</PageTitle>
+
+<input class="form-control" @bind=model.Name />
+<button @onclick=AddNewPerson class="btn btn-primary">Add</button>
+@if (String.IsNullOrEmpty(error) == false)
+{
+    <div class="alert alert-danger">
+        <span>@error</span>
+    </div>
+}
+<ul>
+    @foreach (Person person in personsList)
+    {
+        <li>@person.Name</li>
+    }
+</ul>
+
+@code {
+    private Person model = new Person();
+    private List<Person> personsList = new List<Person>();
+    private string error = string.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPersonsAsync();
+
+    }
+
+    private async Task LoadPersonsAsync()
+    {
+        var response = await Http.GetAsync("api/values");
+        string responseContent = await response.Content.ReadAsStringAsync();
+        personsList = System.Text.Json.JsonSerializer.Deserialize<List<Person>>(responseContent);
+    }
+    private async void AddNewPerson()
+    {
+        error = "";
+        model.Id = personsList.Max(it => it.Id) + 1;
+        string json = System.Text.Json.JsonSerializer.Serialize(model);
+        StringContent content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var response = await Http.PostAsync("api/values", content);
+        if (response.IsSuccessStatusCode == true)
+        {
+
+            model = new Person();
+            await LoadPersonsAsync();
+        }
+        else
+        {
+            error = await response.Content.ReadAsStringAsync();
+        }
+        StateHasChanged();
+    }
+}
