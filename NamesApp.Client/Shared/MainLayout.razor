@@ -1,17 +1,48 @@
 ﻿@inherits LayoutComponentBase
+@inject LoginState State;
+@inject IJSRuntime Js;
+<CascadingValue Value="this">
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+@if (State.User != null)
+{
+    <div class="page">
+        <div class="sidebar">
+            <NavMenu />
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+        <main>
+            <div class="top-row px-4">
+                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                <p>@($"Welcome {State.User}")</p>
+            </div>
+
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+
+}
+else
+{
+    <NamesApp.Client.Pages.LoginView />
+}
+</CascadingValue>
+@code{
+    public void Refresh() => StateHasChanged();
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        if(firstRender == true)
+        {
+            await Js.InvokeVoidAsync("init");
+
+            var item = await Js.InvokeAsync<string>("Functions.getLocalItem", "User");
+            if(String.IsNullOrEmpty(item) == false)
+            {
+                State.User = item;
+                Refresh();
+            }
+        }
+    }
+}

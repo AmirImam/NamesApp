@@ -1,9 +1,10 @@
 ﻿@page "/"
 @using NamesApp.Models;
 @inject HttpClient Http;
-
+@inject IJSRuntime Js;
+@inject LoginState State;
 <PageTitle>Index</PageTitle>
-
+<button @onclick=Logout class="btn btn-danger">Logout</button>
 <input class="form-control" @bind=model.Name />
 <button @onclick=AddNewPerson class="btn btn-primary">Add</button>
 @if (String.IsNullOrEmpty(error) == false)
@@ -12,17 +13,35 @@
         <span>@error</span>
     </div>
 }
-<ul>
-    @foreach (Person person in personsList)
-    {
-        <li>@person.Name</li>
-    }
-</ul>
+<table class="table table-hover">
+    <tbody>
+        @foreach (Person person in personsList)
+        {
+            <tr>
+                <td>@person.Name</td>
+                <td>
+                    <button class="btn btn-light" @onclick=@(()=> PickName(person.Name))>
+                        <i class="oi oi-menu"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+@if(showPopup == true)
+{
+    <Popup @bind-IsVisible=showPopup Name="@pickedName" />
+}
 
 @code {
+    [CascadingParameter]
+    public MainLayout Layout{ get; set; }
     private Person model = new Person();
     private List<Person> personsList = new List<Person>();
     private string error = string.Empty;
+    private bool showPopup = false;
+    private string pickedName = string.Empty;
     protected override async Task OnInitializedAsync()
     {
         await LoadPersonsAsync();
@@ -53,5 +72,18 @@
             error = await response.Content.ReadAsStringAsync();
         }
         StateHasChanged();
+    }
+
+    private void PickName(string name)
+    {
+        pickedName = name;
+        showPopup = true;
+    }
+
+    private async void Logout()
+    {
+        State.User = null;
+        await Js.InvokeVoidAsync("Functions.clear");
+        Layout.Refresh();
     }
 }
