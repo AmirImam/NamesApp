@@ -18,9 +18,10 @@
         @foreach (Person person in personsList)
         {
             <tr>
+                <td>@person.Id</td>
                 <td>@person.Name</td>
                 <td>
-                    <button class="btn btn-light" @onclick=@(()=> PickName(person.Name))>
+                    <button class="btn btn-light" @onclick=@(()=> PickName(person))>
                         <i class="oi oi-menu"></i>
                     </button>
                 </td>
@@ -31,7 +32,7 @@
 </table>
 @if(showPopup == true)
 {
-    <Popup @bind-IsVisible=showPopup Name="@pickedName" />
+    <Popup OnSubmit="OnNewNameSubmit" @bind-IsVisible=showPopup Person="@pickedPerson" />
 }
 
 @code {
@@ -41,7 +42,7 @@
     private List<Person> personsList = new List<Person>();
     private string error = string.Empty;
     private bool showPopup = false;
-    private string pickedName = string.Empty;
+    private Person pickedPerson;
     protected override async Task OnInitializedAsync()
     {
         await LoadPersonsAsync();
@@ -74,10 +75,15 @@
         StateHasChanged();
     }
 
-    private void PickName(string name)
+    private void PickName(Person person)
     {
-        pickedName = name;
+        pickedPerson = person;
         showPopup = true;
+    }
+
+    private void OnNewNameSubmit(Person person)
+    {
+        personsList.First(it => it.Id == person.Id).Name = person.Name;
     }
 
     private async void Logout()

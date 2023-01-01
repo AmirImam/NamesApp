@@ -1,4 +1,5 @@
-﻿@if (IsVisible == true)
+﻿@using NamesApp.Models;
+@if (IsVisible == true)
 {
 
     <div id="exampleModalCenter" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="padding-right: 17px; display: block;">
@@ -12,12 +13,15 @@
                 </div>
                 <div class="modal-body">
                     <p>
-                        You picked item <b> @Name</b>
+                        You picked item <b> @Person.Name</b>
+                        <hr />
+                        Enter new name
+                        <input class="form-control" @bind=name />
                     </p>
                 </div>
                 <div class="modal-footer">
                     <button @onclick=@(()=> IsVisible=false) type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button @onclick=@(()=> IsVisible=false) type="button" class="btn btn-primary">Save changes</button>
+                    <button @onclick=Submit type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
@@ -26,8 +30,9 @@
 
 @code {
     [Parameter]
-    public string Name { get; set; }
-
+    public Person Person { get; set; }
+    [Parameter]
+    public Action<Person> OnSubmit{ get; set; }
     [Parameter]
     public bool IsVisible
     {
@@ -45,4 +50,11 @@
     [Parameter]
     public EventCallback<bool> IsVisibleChanged { get; set; }
     private bool _isVisible = false;
+    private string name = string.Empty;
+    private void Submit()
+    {
+        Person.Name = name;
+        OnSubmit?.Invoke(Person);
+        IsVisible = false;
+    }
 }

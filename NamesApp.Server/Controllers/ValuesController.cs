@@ -11,10 +11,10 @@ namespace NamesApp.Server.Controllers
         public static List<Person> Values { get; set; } = new List<Person>
         {
             new Person(){Id=1,Name="Amir"},
-            new Person(){Id=1,Name="Ahmad"},
-            new Person(){Id=1,Name="Ramadan"},
-            new Person(){Id=1,Name="Gemmy"},
-            new Person(){Id=1,Name="Amr"},
+            new Person(){Id=2,Name="Ahmad"},
+            new Person(){Id=3,Name="Ramadan"},
+            new Person(){Id=4,Name="Gemmy"},
+            new Person(){Id=5,Name="Amr"},
         };
 
         [HttpGet]
