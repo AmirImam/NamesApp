@@ -1,3 +1,5 @@
+using NamesApp.Server;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +12,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(opt =>
     opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSingleton<DataBase>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(opt =>
 {

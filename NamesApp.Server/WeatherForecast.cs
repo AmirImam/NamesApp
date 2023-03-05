@@ -1,13 +1,49 @@
+using NamesApp.Models;
+
 namespace NamesApp.Server
 {
-    public class WeatherForecast
+    public class DataBase
     {
-        public DateTime Date { get; set; }
+        public List<Product> Products { get; } = new()
+        {
+            new()
+            {
+                //Id = 1,
+                Name = "Samsung Galaxy A23 SM-A235F/DSN, Dual SIM Blue 4GB RAM 128GB 4G - Blue",
+                Price =6199,
+                PhotoUrl="https://m.media-amazon.com/images/I/61mOx8va+LL._AC_SX679_.jpg"
+            },
+            new()
+            {
+                //Id = 2,
+                Name = "Apple iPhone 14 Pro Max (256 GB) - Gold",
+                Price =59222,
+                PhotoUrl="https://m.media-amazon.com/images/I/71T5NVOgbpL._AC_SX679_.jpg"
+            },
+            new()
+            {
+                //Id = 3,
+                Name = "HP Laptop 15s-fq5009ne (6G3H3EA)",
+                Price =13999,
+                PhotoUrl="https://m.media-amazon.com/images/I/41dlVqqF07L._AC_SX679_.jpg"
+            },
+            new()
+            {
+                //Id = 4,
+                Name = "HP Pavilion x360 Convertible 2n1 14-dy0142ne",
+                Price =23699,
+                PhotoUrl="https://m.media-amazon.com/images/I/61ggOLMkuYL._AC_SX679_.jpg"
+            },
+            new()
+            {
+                //Id = 5,
+                Name = "Eau de Toilette - 55ml",
+                Price =270,
+                PhotoUrl="https://m.media-amazon.com/images/I/517SRdmmInL._AC_SX679_.jpg"
+            }
+        };
 
-        public int TemperatureC { get; set; }
+        public List<Order> Orders { get; } = new();
 
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-
-        public string? Summary { get; set; }
     }
 }
