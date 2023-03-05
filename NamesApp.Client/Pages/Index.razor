@@ -12,5 +12,11 @@ Welcome to your new app.
 <Counter @bind-CurrentCount=number  />
 
 @code{
-    private int number = 10;
+    private int number = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1000);
+        number = new Random().Next(100, 1000);
+    }
 }
